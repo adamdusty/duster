@@ -1,0 +1,22 @@
+<Project>
+
+    <PropertyGroup>
+        <LangVersion>10.0</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>10.0</LangVersion>
+        <Platform Condition="$(Platform) == ''">AnyCPU</Platform>
+        <Configuration Condition="$(Configuration)==''">Debug</Configuration>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <BuildDir>$(MSBuildThisFileDirectory)\build</BuildDir>
+        <BaseIntermediateOutputPath>$(BuildDir)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+        <BaseOutputPath>$(BuildDir)\bin\$(Configuration)\$(MSBuildProjectName)\</BaseOutputPath>
+        <OutputPath>$(BaseOutputPath)</OutputPath>
+    </PropertyGroup>
+
+</Project>
