@@ -1,12 +1,19 @@
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Duster.App;
 
 public class PluginService
 {
+    private AssemblyLoadContext _loadContext;
+
+    public PluginService()
+    {
+        _loadContext = new AssemblyLoadContext("LoadContext", true);
+    }
+
     public Assembly LoadPlugin(string path)
     {
-        PluginLoadContext context = new PluginLoadContext(path);
-        return context.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(path)));
+        return _loadContext.LoadFromAssemblyPath(path);
     }
 }

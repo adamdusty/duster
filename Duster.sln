@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duster.Sdk", "src\Duster.Sd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duster.TestPlugin", "src\Duster.TestPlugin\Duster.TestPlugin.csproj", "{3874AB05-B282-44F7-830D-01A254F4487C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duster.TestPlugin2", "src\Duster.TestPlugin2\Duster.TestPlugin2.csproj", "{ED41488D-34C5-444F-B6A5-ACC007AA1129}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +34,15 @@ Global
 		{3874AB05-B282-44F7-830D-01A254F4487C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3874AB05-B282-44F7-830D-01A254F4487C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3874AB05-B282-44F7-830D-01A254F4487C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED41488D-34C5-444F-B6A5-ACC007AA1129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED41488D-34C5-444F-B6A5-ACC007AA1129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED41488D-34C5-444F-B6A5-ACC007AA1129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED41488D-34C5-444F-B6A5-ACC007AA1129}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E74C2DF3-85E9-4844-9724-C13969D77236} = {0A22F4D0-E0BF-49DC-B281-97B16CCF5FE5}
 		{638BD8C0-34F2-48F0-933D-0C4BCE5D1C9B} = {0A22F4D0-E0BF-49DC-B281-97B16CCF5FE5}
 		{3874AB05-B282-44F7-830D-01A254F4487C} = {0A22F4D0-E0BF-49DC-B281-97B16CCF5FE5}
+		{ED41488D-34C5-444F-B6A5-ACC007AA1129} = {0A22F4D0-E0BF-49DC-B281-97B16CCF5FE5}
 	EndGlobalSection
 EndGlobal

@@ -7,13 +7,9 @@ public class PluginLoadContext : AssemblyLoadContext
 {
     private AssemblyDependencyResolver _resovler;
 
-    /// <summary>
-    /// Creates instance with path to plugin assembly.
-    /// </summary>
-    /// <param name="path">Path to plugin assembly</param>
-    public PluginLoadContext(string path)
+    public PluginLoadContext(AssemblyDependencyResolver resolver)
     {
-        _resovler = new AssemblyDependencyResolver(path);
+        _resovler = resolver;
     }
 
     protected override Assembly? Load(AssemblyName assemblyName)
