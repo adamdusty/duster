@@ -7,16 +7,6 @@ public class TestPlugin : IPlugin
 {
     public string Name => "Test Plugin";
     public Sdk.Version Version => new Sdk.Version(0, 1, 0);
-
-    public void Load()
-    {
-        System.Console.WriteLine("TestPlugin Loading");
-    }
-
-    public void Unload()
-    {
-        System.Console.WriteLine("TestPlugin Unloading");
-    }
 }
 
 public static class Library

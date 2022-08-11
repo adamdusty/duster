@@ -1,7 +1,11 @@
 namespace Duster.Sdk;
 
-public struct Version
+public class Version
 {
+    public uint Major { get; }
+    public uint Minor { get; }
+    public uint Patch { get; }
+
     public Version(uint major, uint minor, uint patch)
     {
         Major = major;
@@ -9,7 +13,8 @@ public struct Version
         Patch = patch;
     }
 
-    public uint Major;
-    public uint Minor;
-    public uint Patch;
+    public override string ToString()
+    {
+        return $"{Major}.{Minor}.{Patch}";
+    }
 }
