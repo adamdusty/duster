@@ -6,12 +6,12 @@ class Program
 {
     static void Main()
     {
-        var service = new PluginService();
-        var plugins = service.LoadPluginsFromAssembly(@"/home/ad/dev/duster/build/bin/Debug/Duster.TestPlugin/net6.0/Duster.TestPlugin.dll");
+        var loader = new PluginLoader(@"./plugins");
+        var plugins = loader.LoadAllPlugins();
 
-        foreach (var plugin in plugins)
+        foreach (var p in plugins)
         {
-            System.Console.WriteLine(plugin.Name);
+            System.Console.WriteLine(p.Name);
         }
     }
 }

@@ -4,7 +4,6 @@
         <LangVersion>10.0</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <!-- <NoWarn>8618</NoWarn> -->
     </PropertyGroup>
 
     <PropertyGroup>

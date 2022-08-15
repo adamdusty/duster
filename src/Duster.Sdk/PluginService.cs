@@ -3,9 +3,9 @@ using System.Runtime.Loader;
 
 namespace Duster.Sdk;
 
-public class PluginService
+public static class PluginService
 {
-    public IEnumerable<IPlugin> LoadPluginsFromAssembly(string path)
+    public static IEnumerable<IPlugin> LoadPluginsFromAssembly(string path)
     {
         var context = new AssemblyLoadContext("LoadContext", true);
         var assembly = context.LoadFromAssemblyPath(path);
