@@ -9,8 +9,4 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
-  <Target Name="MakePluginDirectory" AfterTargets="Build">
-    <MakeDir Directories="$(OutputPath)plugins" />
-  </Target>
-
 </Project>

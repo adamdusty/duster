@@ -1,4 +1,5 @@
-﻿using Duster.Sdk;
+﻿using DefaultEcs;
+using Duster.Sdk;
 
 namespace Duster.App;
 
@@ -6,12 +7,17 @@ class Program
 {
     static void Main()
     {
-        var loader = new PluginLoader(@"/home/ad/dev/duster/build/Debug/Duster.App/net6.0/plugins");
+        var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
+
+        var loader = new PluginLoader(Path.Combine(exeDir, "plugins"));
         var plugins = loader.LoadAllPlugins();
+
+        var world = new World();
 
         foreach (var p in plugins)
         {
-            System.Console.WriteLine(p.Name);
+            p.Initialize(world);
         }
     }
 }
