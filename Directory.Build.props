@@ -15,7 +15,7 @@
     <PropertyGroup>
         <BuildDir>$(MSBuildThisFileDirectory)\build</BuildDir>
         <BaseIntermediateOutputPath>$(BuildDir)\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-        <BaseOutputPath>$(BuildDir)\bin\$(Configuration)\$(MSBuildProjectName)\</BaseOutputPath>
+        <BaseOutputPath>$(BuildDir)\$(Configuration)\$(MSBuildProjectName)\</BaseOutputPath>
         <OutputPath>$(BaseOutputPath)</OutputPath>
     </PropertyGroup>
 

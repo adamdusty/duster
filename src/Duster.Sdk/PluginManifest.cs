@@ -1,6 +1,11 @@
 namespace Duster.Sdk;
 
-public interface IPluginManifest
+public class PluginManifest
 {
-    string Name { get; }
+    public string Name { get; }
+
+    public PluginManifest(string name)
+    {
+        Name = name;
+    }
 }
