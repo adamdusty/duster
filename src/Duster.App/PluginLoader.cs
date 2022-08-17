@@ -14,7 +14,7 @@ public class PluginLoader
         _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
-    public IEnumerable<IPlugin> LoadAllPlugins()
+    public List<IPlugin> LoadAllPlugins()
     {
         var assemblyPaths = new List<string>();
         // Load plugin manifest from each folder in ./plugins
@@ -32,6 +32,6 @@ public class PluginLoader
         }
 
         // Use plugin service to load assembly and types by the plugin name
-        return assemblyPaths.SelectMany(a => PluginService.LoadPluginsFromAssembly(a));
+        return assemblyPaths.SelectMany(a => PluginService.LoadPluginsFromAssembly(a)).ToList();
     }
 }

@@ -11,7 +11,7 @@ public class TestSystem : AEntitySetSystem<float>
 
     protected override void Update(float state, ReadOnlySpan<Entity> entities)
     {
-        System.Console.WriteLine("hello");
+        System.Console.WriteLine($"DeltaTime: {state}");
     }
 }
 

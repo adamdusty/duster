@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <LangVersion>10.0</LangVersion>
         <Platform Condition="$(Platform) == ''">AnyCPU</Platform>
         <Configuration Condition="$(Configuration)==''">Debug</Configuration>
     </PropertyGroup>
