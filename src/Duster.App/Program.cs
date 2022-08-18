@@ -27,6 +27,7 @@ class Program
         foreach (var p in plugins)
         {
             p.Initialize(world);
+            System.Console.WriteLine($"Plugin initialized: {p.Name}");
             fixedUpdateSystems.AddRange(p.FixedUpdateSystems);
             frameUpdateSystems.AddRange(p.FrameUpdateSystems);
         }
@@ -55,11 +56,9 @@ class Program
             accumulator += frameTime;
             time = 0;
 
-            System.Console.WriteLine($"Accumulator: {accumulator}");
             // Fixed dt update
             while (accumulator >= deltaTime)
             {
-                System.Console.WriteLine($"Fixed DT: {sw.Elapsed.TotalSeconds - t0}");
                 t0 = sw.Elapsed.TotalSeconds;
                 fixedUpdate.Update((float)deltaTime);
                 accumulator -= deltaTime;

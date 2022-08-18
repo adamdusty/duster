@@ -18,3 +18,6 @@ Copy-Item -Path ./build/Debug/Duster.App/net6.0/* -Destination ./build/App -Recu
 
 Write-Output "Copying TestPlugin."
 Copy-Item -Path ./build/Debug/Duster.TestPlugin/net6.0/ -Destination ./build/App/plugins/test-plugin/ -Recurse
+
+Write-Output "Copying RendererPlugin."
+Copy-Item -Path ./build/Debug/Duster.Renderer/net6.0/ -Destination ./build/App/plugins/render-plugin/ -Recurse

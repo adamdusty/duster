@@ -3,7 +3,7 @@ using DefaultEcs.System;
 
 namespace Duster.Sdk;
 
-public interface IPlugin
+public interface IPlugin : IDisposable
 {
     string Name { get; }
     string Description { get; }

@@ -32,6 +32,6 @@ public class PluginLoader
         }
 
         // Use plugin service to load assembly and types by the plugin name
-        return assemblyPaths.SelectMany(a => PluginService.LoadPluginsFromAssembly(a)).ToList();
+        return assemblyPaths.SelectMany(a => Plugins.LoadPluginsFromAssembly(a)).ToList();
     }
 }

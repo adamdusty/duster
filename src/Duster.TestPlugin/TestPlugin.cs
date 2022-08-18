@@ -34,4 +34,6 @@ public class TestPlugin : IPlugin
     {
         FixedUpdateSystems.Add(new TestSystem(world));
     }
+
+    public void Cleanup() { }
 }
