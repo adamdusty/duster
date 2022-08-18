@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using DefaultEcs;
+using DefaultEcs.System;
 using Duster.Sdk;
 
 namespace Duster.App;
@@ -19,43 +20,59 @@ class Program
         var world = new World();
         var e = world.CreateEntity();
 
+        var fixedUpdateSystems = new List<ISystem<float>>();
+        var frameUpdateSystems = new List<ISystem<float>>();
+
         // Initialize plugins
         foreach (var p in plugins)
         {
             p.Initialize(world);
+            fixedUpdateSystems.AddRange(p.FixedUpdateSystems);
+            frameUpdateSystems.AddRange(p.FrameUpdateSystems);
         }
+
+        var fixedUpdate = new SequentialSystem<float>(fixedUpdateSystems);
+        var frameUpdate = new SequentialSystem<float>(frameUpdateSystems);
 
         // Set up timing
         var sw = new Stopwatch();
         sw.Start();
 
-        var dt = 0d;
-        var cycleBeginTime = sw.Elapsed.TotalSeconds;
-        var cycleEndTime = cycleBeginTime;
-        var frameTime = cycleEndTime;
+        var time = 0d;
+        var deltaTime = 0.02d;
+        var frameBeginTimeStamp = sw.Elapsed.TotalSeconds;
+        var frameEndTimeStamp = frameBeginTimeStamp;
+        var frameTime = frameEndTimeStamp - frameBeginTimeStamp;
+        var accumulator = 0d;
+        var interpolatedDeltaTime = 1.0d;
 
+        double t0 = 0;
 
         // Game loop
         while (true)
         {
-            cycleBeginTime = sw.Elapsed.TotalSeconds;
+            frameBeginTimeStamp = frameEndTimeStamp; // Beginning of new frame
+            accumulator += frameTime;
+            time = 0;
 
-            while (frameTime > 0)
+            System.Console.WriteLine($"Accumulator: {accumulator}");
+            // Fixed dt update
+            while (accumulator >= deltaTime)
             {
-                dt = Math.Min(frameTime, dt);
-                frameTime -= dt;
+                System.Console.WriteLine($"Fixed DT: {sw.Elapsed.TotalSeconds - t0}");
+                t0 = sw.Elapsed.TotalSeconds;
+                fixedUpdate.Update((float)deltaTime);
+                accumulator -= deltaTime;
+                time += deltaTime;
             }
 
-            foreach (var p in plugins)
-            {
-                foreach (var s in p.Systems)
-                {
-                    s.Update((float)dt);
-                }
-            }
+            interpolatedDeltaTime = accumulator / deltaTime;
 
-            cycleEndTime = sw.Elapsed.TotalSeconds;
-            dt = cycleEndTime - cycleBeginTime;
+            // Variable dt update
+            frameUpdate.Update((float)interpolatedDeltaTime);
+
+            frameEndTimeStamp = sw.Elapsed.TotalSeconds; // End of previous frame 
+            frameTime = frameEndTimeStamp - frameBeginTimeStamp; // Time previous frame took to update
         }
     }
 }

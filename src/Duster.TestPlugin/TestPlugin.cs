@@ -11,7 +11,7 @@ public class TestSystem : AEntitySetSystem<float>
 
     protected override void Update(float state, ReadOnlySpan<Entity> entities)
     {
-        System.Console.WriteLine($"DeltaTime: {state}");
+        // System.Console.WriteLine($"DeltaTime: {state}");
     }
 }
 
@@ -21,16 +21,17 @@ public class TestPlugin : IPlugin
 
     public string Description => "Plugin to test integration.";
 
-    public List<ISystem<float>> Systems { get; private set; }
+    public List<ISystem<float>> FrameUpdateSystems { get; private set; }
+    public List<ISystem<float>> FixedUpdateSystems { get; private set; }
 
     public TestPlugin()
     {
-        Systems = new List<ISystem<float>>();
+        FrameUpdateSystems = new List<ISystem<float>>();
+        FixedUpdateSystems = new List<ISystem<float>>();
     }
 
     public void Initialize(World world)
     {
-        Systems.Add(new TestSystem(world));
-        System.Console.WriteLine("Initializing plugin");
+        FixedUpdateSystems.Add(new TestSystem(world));
     }
 }
