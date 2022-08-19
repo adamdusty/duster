@@ -1,3 +1,6 @@
 {
-    "name": "Duster.Renderer"
+    "name": "Duster.Renderer",
+    "assemblyPaths": [
+        "./Duster.Renderer.dll"
+    ]
 }

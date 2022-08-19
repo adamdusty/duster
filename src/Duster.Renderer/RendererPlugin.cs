@@ -10,6 +10,7 @@ public class RendererPlugin : IPlugin
     private SDL_Event _event;
     private IntPtr _window;
     private bool _quit = false;
+    private World? _world;
 
     public string Name => "Renderer";
 
@@ -27,6 +28,7 @@ public class RendererPlugin : IPlugin
 
     public void Initialize(World world)
     {
+        _world = world;
         SDL_Init(SDL_INIT_VIDEO);
         _window = SDL_CreateWindow(
             "RenderPlugin window",
@@ -41,7 +43,7 @@ public class RendererPlugin : IPlugin
         {
             if (_quit)
             {
-
+                world.Set<bool>(true);
             }
 
             Input();

@@ -33,7 +33,8 @@ public class TestPlugin : IPlugin
     public void Initialize(World world)
     {
         FixedUpdateSystems.Add(new TestSystem(world));
+        System.Console.WriteLine("Initializing test plugin...");
     }
 
-    public void Cleanup() { }
+    public void Dispose() { }
 }

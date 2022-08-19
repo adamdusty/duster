@@ -1,3 +1,6 @@
 {
-    "name": "Duster.TestPlugin"
+    "name": "Duster.TestPlugin",
+    "assemblyPaths": [
+        "./Duster.TestPlugin.dll"
+    ]
 }

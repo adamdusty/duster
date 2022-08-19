@@ -13,27 +13,8 @@ class Program
         var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
 
-        var loader = new PluginLoader(Path.Combine(exeDir, "plugins"));
-        var plugins = loader.LoadAllPlugins();
-
-        // Create game world
-        var world = new World();
-        var e = world.CreateEntity();
-
-        var fixedUpdateSystems = new List<ISystem<float>>();
-        var frameUpdateSystems = new List<ISystem<float>>();
-
-        // Initialize plugins
-        foreach (var p in plugins)
-        {
-            p.Initialize(world);
-            System.Console.WriteLine($"Plugin initialized: {p.Name}");
-            fixedUpdateSystems.AddRange(p.FixedUpdateSystems);
-            frameUpdateSystems.AddRange(p.FrameUpdateSystems);
-        }
-
-        var fixedUpdate = new SequentialSystem<float>(fixedUpdateSystems);
-        var frameUpdate = new SequentialSystem<float>(frameUpdateSystems);
+        using var app = new Application();
+        app.LoadAllPlugins(Path.Combine(exeDir, "plugins"));
 
         // Set up timing
         var sw = new Stopwatch();
@@ -50,7 +31,7 @@ class Program
         double t0 = 0;
 
         // Game loop
-        while (true)
+        while (!app.World.Get<bool>())
         {
             frameBeginTimeStamp = frameEndTimeStamp; // Beginning of new frame
             accumulator += frameTime;
@@ -60,7 +41,7 @@ class Program
             while (accumulator >= deltaTime)
             {
                 t0 = sw.Elapsed.TotalSeconds;
-                fixedUpdate.Update((float)deltaTime);
+                app.FixedUpdate((float)deltaTime);
                 accumulator -= deltaTime;
                 time += deltaTime;
             }
@@ -68,7 +49,7 @@ class Program
             interpolatedDeltaTime = accumulator / deltaTime;
 
             // Variable dt update
-            frameUpdate.Update((float)interpolatedDeltaTime);
+            app.FrameUpdate((float)interpolatedDeltaTime);
 
             frameEndTimeStamp = sw.Elapsed.TotalSeconds; // End of previous frame 
             frameTime = frameEndTimeStamp - frameBeginTimeStamp; // Time previous frame took to update

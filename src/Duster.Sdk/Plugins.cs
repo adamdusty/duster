@@ -5,7 +5,7 @@ namespace Duster.Sdk;
 
 public static class Plugins
 {
-    public static List<IPlugin> LoadPluginsFromAssembly(string path)
+    public static List<IPlugin> LoadTypesFromAssembly(string path)
     {
         // var context = new AssemblyLoadContext("LoadContext", true);
         var context = new PluginLoadContext(path);
