@@ -15,7 +15,7 @@ public class Application : IDisposable
     public Application()
     {
         World = new World();
-        World.Set<bool>(false);
+        World.Set<ApplicationState>(new ApplicationState());
         _fixedUpdateSystems = new List<ISystem<float>>();
         _frameUpdateSystems = new List<ISystem<float>>();
         _plugins = new List<IPlugin>();

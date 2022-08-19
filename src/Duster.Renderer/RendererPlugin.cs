@@ -9,7 +9,7 @@ public class RendererPlugin : IPlugin
 {
     private SDL_Event _event;
     private IntPtr _window;
-    private bool _quit = false;
+    private IntPtr _renderer;
     private World? _world;
 
     public string Name => "Renderer";
@@ -26,6 +26,12 @@ public class RendererPlugin : IPlugin
         FixedUpdateSystems = new List<ISystem<float>>();
     }
 
+    private void SignalQuit()
+    {
+        if (_world is not null)
+            _world.Get<ApplicationState>().Quit = true;
+    }
+
     public void Initialize(World world)
     {
         _world = world;
@@ -39,14 +45,15 @@ public class RendererPlugin : IPlugin
             SDL_WindowFlags.SDL_WINDOW_SHOWN
         );
 
+        _renderer = SDL_CreateRenderer(_window, 0, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+
         FrameUpdateSystems.Add(new ActionSystem<float>(s =>
         {
-            if (_quit)
-            {
-                world.Set<bool>(true);
-            }
-
             Input();
+
+            SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
+            SDL_RenderClear(_renderer);
+            SDL_RenderPresent(_renderer);
         }));
 
 
@@ -59,13 +66,13 @@ public class RendererPlugin : IPlugin
             switch (_event.type)
             {
                 case SDL_EventType.SDL_QUIT:
-                    _quit = true;
+                    SignalQuit();
                     break;
                 case SDL_EventType.SDL_KEYDOWN:
                     switch (_event.key.keysym.scancode)
                     {
                         case SDL_Scancode.SDL_SCANCODE_ESCAPE:
-                            _quit = true;
+                            SignalQuit();
                             break;
                         default:
                             break;

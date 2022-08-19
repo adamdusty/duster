@@ -20,39 +20,28 @@ class Program
         var sw = new Stopwatch();
         sw.Start();
 
-        var time = 0d;
-        var deltaTime = 0.02d;
-        var frameBeginTimeStamp = sw.Elapsed.TotalSeconds;
-        var frameEndTimeStamp = frameBeginTimeStamp;
-        var frameTime = frameEndTimeStamp - frameBeginTimeStamp;
-        var accumulator = 0d;
-        var interpolatedDeltaTime = 1.0d;
-
-        double t0 = 0;
+        var time = new TimeTracker(0.02);
 
         // Game loop
-        while (!app.World.Get<bool>())
+        while (!app.World.Get<ApplicationState>().Quit)
         {
-            frameBeginTimeStamp = frameEndTimeStamp; // Beginning of new frame
-            accumulator += frameTime;
-            time = 0;
+            time.Begin = sw.Elapsed.TotalSeconds;
+            time.Accumulator += time.FrameTime;
 
             // Fixed dt update
-            while (accumulator >= deltaTime)
+            while (time.Accumulator >= time.FixedDeltaTime)
             {
-                t0 = sw.Elapsed.TotalSeconds;
-                app.FixedUpdate((float)deltaTime);
-                accumulator -= deltaTime;
-                time += deltaTime;
+                app.FixedUpdate((float)time.FixedDeltaTime);
+                time.Accumulator -= time.FixedDeltaTime;
             }
 
-            interpolatedDeltaTime = accumulator / deltaTime;
+            time.InterpolatedTime = time.Accumulator / time.FixedDeltaTime;
 
             // Variable dt update
-            app.FrameUpdate((float)interpolatedDeltaTime);
+            app.FrameUpdate((float)time.InterpolatedTime);
 
-            frameEndTimeStamp = sw.Elapsed.TotalSeconds; // End of previous frame 
-            frameTime = frameEndTimeStamp - frameBeginTimeStamp; // Time previous frame took to update
+            time.End = sw.Elapsed.TotalSeconds;
+            time.FrameTime = time.End - time.Begin; // Time previous frame took to update
         }
     }
 }
