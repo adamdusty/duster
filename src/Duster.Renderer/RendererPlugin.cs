@@ -1,5 +1,4 @@
-﻿using Silk.NET.Windowing;
-using DefaultEcs;
+﻿using DefaultEcs;
 using DefaultEcs.System;
 using Duster.Sdk;
 
@@ -22,6 +21,7 @@ public class RendererPlugin : IPlugin
 
     public void Initialize(World world)
     {
+        System.Console.WriteLine("Loading render plugin");
         FrameUpdateSystems.Add(new WindowSystem(world));
     }
     public void Dispose() { }

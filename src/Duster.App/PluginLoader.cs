@@ -45,25 +45,4 @@ public static class PluginLoading
 
         return manifest.AssemblyPaths.Select(p => Path.Combine(pluginDirectory.FullName, p)).SelectMany(p => Plugins.LoadTypesFromAssembly(p)).ToList();
     }
-
-    // public List<IPlugin> LoadAllPlugins()
-    // {
-    //     var assemblyPaths = new List<string>();
-    //     // Load plugin manifest from each folder in ./plugins
-    //     foreach (var dir in _pluginDirectory.EnumerateDirectories())
-    //     {
-    //         // read manifest file
-    //         string manifestJson = File.ReadAllText(Path.Combine(dir.FullName, "manifest.json"));
-    //         var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson, _jsonOptions);
-
-    //         if (manifest is null)
-    //             continue;
-
-    //         // load assembly/types by plugin name described in manifest
-    //         assemblyPaths.Add(Path.Combine(dir.FullName, $"{manifest.Name}.dll"));
-    //     }
-
-    //     // Use plugin service to load assembly and types by the plugin name
-    //     return assemblyPaths.SelectMany(a => Plugins.LoadTypesFromAssembly(a)).ToList();
-    // }
 }

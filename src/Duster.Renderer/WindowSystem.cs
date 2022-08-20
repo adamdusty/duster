@@ -7,6 +7,11 @@ using Duster.Sdk;
 
 namespace Duster.Renderer;
 
+public struct DrawInfo
+{
+    public int X;
+}
+
 public class WindowSystem : ISystem<float>
 {
     private IWindow _window;

@@ -12,10 +12,10 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ppy.SDL2-CS" Version="1.0.565-alpha" />
+    <ProjectReference Include="..\Duster.Renderer\Duster.Renderer.csproj">
+      <ExcludeAssets>runtime;native</ExcludeAssets>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
