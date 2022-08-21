@@ -5,14 +5,27 @@ namespace Duster.Sdk;
 
 public static class Plugins
 {
-    public static List<IPlugin> LoadTypesFromAssembly(string path)
+    public static Assembly? LoadPluginAssemblyFromPath(string path)
     {
         var context = new PluginLoadContext(path);
-        var assembly = context.LoadFromAssemblyPath(path);
+        try
+        {
+            return context.LoadFromAssemblyPath(path);
+        }
+        catch (Exception e) when (
+            e is ArgumentException ||
+            e is ArgumentNullException ||
+            e is FileLoadException ||
+            e is FileNotFoundException ||
+            e is BadImageFormatException
+        )
+        {
+            return null;
+        }
+    }
 
-        if (assembly is null)
-            return new List<IPlugin>();
-
+    public static List<IPlugin> InstantiateTypesFromPluginAssembly(Assembly assembly)
+    {
         List<IPlugin> plugins = assembly.GetTypes()
             .Where(t => typeof(IPlugin).IsAssignableFrom(t))
             .Select(t => Activator.CreateInstance(t) as IPlugin)

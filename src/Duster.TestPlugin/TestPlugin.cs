@@ -13,6 +13,22 @@ public class TestSystem : AEntitySetSystem<float>
     protected override void Update(float state, ReadOnlySpan<Entity> entities) { }
 }
 
+public class TestSystemInfo : ISystemInfo
+{
+    private ISystem<float> _system;
+    public ISystem<float> System => _system;
+    public SystemType SystemType => SystemType.FrameUpdate;
+
+    public TestSystemInfo()
+    {
+        _system = new ActionSystem<float>((dt) =>
+        {
+            return;
+        });
+    }
+}
+
+
 public class TestPlugin : IPlugin
 {
     private DrawInfo _di;

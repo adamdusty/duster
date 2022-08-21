@@ -23,7 +23,7 @@ public class Application : IDisposable
 
     public void LoadAllPlugins(string path)
     {
-        _plugins = PluginLoading.LoadAllPluginsFromDirectory(path);
+        _plugins = PluginLoading.LoadPluginsFromDirectory(path) ?? new List<IPlugin>();
         foreach (var p in _plugins)
         {
             p.Initialize(World);
