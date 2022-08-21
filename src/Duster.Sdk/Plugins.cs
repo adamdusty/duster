@@ -3,13 +3,21 @@ using System.Runtime.Loader;
 
 namespace Duster.Sdk;
 
-public static class Plugins
+public class PluginService
 {
-    public static Assembly? LoadPluginAssemblyFromPath(string path)
+    private List<PluginLoadContext> _loadContexts;
+
+    public PluginService()
+    {
+        _loadContexts = new List<PluginLoadContext>();
+    }
+
+    public Assembly? LoadPluginAssemblyFromPath(string path)
     {
         var context = new PluginLoadContext(path);
         try
         {
+            _loadContexts.Add(context);
             return context.LoadFromAssemblyPath(path);
         }
         catch (Exception e) when (
@@ -24,7 +32,7 @@ public static class Plugins
         }
     }
 
-    public static List<IPlugin> InstantiateTypesFromPluginAssembly(Assembly assembly)
+    public List<IPlugin> InstantiateTypesFromPluginAssembly(Assembly assembly)
     {
         List<IPlugin> plugins = assembly.GetTypes()
             .Where(t => typeof(IPlugin).IsAssignableFrom(t))

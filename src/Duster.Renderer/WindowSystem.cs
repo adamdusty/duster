@@ -28,6 +28,7 @@ public class WindowSystem : ISystem<float>
         options.Title = "Hello world from plugin from silk";
         options.IsEventDriven = false;
 
+        Window.PrioritizeSdl();
         _window = Window.Create(options);
         _window.Initialize();
         _input = _window.CreateInput();

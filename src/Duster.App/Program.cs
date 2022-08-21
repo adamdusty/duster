@@ -7,14 +7,14 @@ namespace Duster.App;
 
 class Program
 {
-    static void Main()
+    static async Task Main()
     {
         // Load all available plugins
         var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
 
         using var app = new Application();
-        app.LoadAllPlugins(Path.Combine(exeDir, "plugins"));
+        var modLoader = new ModLoader();
 
         // Set up timing
         var sw = new Stopwatch();
