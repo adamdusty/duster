@@ -9,6 +9,7 @@ public class Application : IDisposable
     private List<ISystem<float>> _fixedUpdateSystems;
     private List<ISystem<float>> _frameUpdateSystems;
 
+
     public World World { get; private set; }
 
     public Application()
@@ -18,6 +19,7 @@ public class Application : IDisposable
         _fixedUpdateSystems = new List<ISystem<float>>();
         _frameUpdateSystems = new List<ISystem<float>>();
     }
+
 
     public void FixedUpdate(float dt)
     {
@@ -35,7 +37,5 @@ public class Application : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

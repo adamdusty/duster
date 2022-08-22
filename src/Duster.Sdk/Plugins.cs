@@ -5,11 +5,35 @@ namespace Duster.Sdk;
 
 public class PluginService
 {
+    private List<string> _searchPaths;
     private List<PluginLoadContext> _loadContexts;
+    private AssemblyLoadContext _context;
 
     public PluginService()
     {
+        _context = new AssemblyLoadContext("ModContext", true);
         _loadContexts = new List<PluginLoadContext>();
+        _searchPaths = new List<string>(
+            new[]{
+                @"/home/ad/dev/duster/build/App/mods/render-plugin",
+                @"/home/ad/dev/duster/build/App/mods/test-plugin"
+            }
+        );
+
+        _context.Resolving += SearchForLibrary;
+    }
+
+    private Assembly? SearchForLibrary(AssemblyLoadContext context, AssemblyName name)
+    {
+        foreach (var path in _searchPaths)
+        {
+            if (!string.IsNullOrEmpty(name.Name) && File.Exists(Path.Combine(path, $"{name.Name}.dll")))
+            {
+                return context.LoadFromAssemblyPath(Path.Combine(path, $"{name.Name}.dll"));
+            }
+        }
+
+        return null;
     }
 
     public Assembly? LoadPluginAssemblyFromPath(string path)
@@ -17,8 +41,9 @@ public class PluginService
         var context = new PluginLoadContext(path);
         try
         {
-            _loadContexts.Add(context);
-            return context.LoadFromAssemblyPath(path);
+            return _context.LoadFromAssemblyPath(path);
+            // _loadContexts.Add(context);
+            // return context.LoadFromAssemblyPath(path);
         }
         catch (Exception e) when (
             e is ArgumentException ||
@@ -56,7 +81,7 @@ public class PluginLoadContext : AssemblyLoadContext
     protected override Assembly? Load(AssemblyName assemblyName)
     {
         string? assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
-        if (assemblyPath != null)
+        if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
         {
             return LoadFromAssemblyPath(assemblyPath);
         }

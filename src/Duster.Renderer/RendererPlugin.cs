@@ -5,24 +5,16 @@ using Duster.Sdk;
 namespace Duster.Renderer;
 public class RendererPlugin : IPlugin
 {
-    public string Name => "Renderer";
-
-    public string Description => "Core renderer.";
-
-    public List<ISystem<float>> FrameUpdateSystems { get; private set; }
-
-    public List<ISystem<float>> FixedUpdateSystems { get; private set; }
+    private ISystem<float> _system;
+    private World _world;
 
     public RendererPlugin()
     {
-        FrameUpdateSystems = new List<ISystem<float>>();
-        FixedUpdateSystems = new List<ISystem<float>>();
+        _world = new World();
     }
 
-    public void Initialize(World world)
+    public void Initialize()
     {
-        System.Console.WriteLine("Loading render plugin");
-        FrameUpdateSystems.Add(new WindowSystem(world));
+        _system = new WindowSystem(_world);
     }
-    public void Dispose() { }
 }

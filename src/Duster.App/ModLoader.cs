@@ -14,6 +14,24 @@ public class ModLoader
     }
 
     /// <summary>
+    /// Load manifest file.
+    /// </summary>
+    /// <param name="path">Path to manifest file.</param>
+    /// <returns>Manifest object if successfully read, otherwise null.</returns>
+    private async Task<Manifest?> ReadManifest(string path)
+    {
+        try
+        {
+            using var json = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return await JsonSerializer.DeserializeAsync<Manifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (Exception e) when (e is DirectoryNotFoundException or FileNotFoundException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Loads mod from path to directory.
     /// </summary>
     /// <param name="path">Directory of the mod to be loaded.</param>
@@ -29,21 +47,4 @@ public class ModLoader
         return _pluginService.LoadPluginAssemblyFromPath(Path.Combine(path, manifest.AssemblyPath));
     }
 
-    /// <summary>
-    /// Load manifest file.
-    /// </summary>
-    /// <param name="path">Path to manifest file.</param>
-    /// <returns>Manifest object if successfully read, otherwise null</returns>
-    private async Task<Manifest?> ReadManifest(string path)
-    {
-        try
-        {
-            using var json = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return await JsonSerializer.DeserializeAsync<Manifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        }
-        catch (Exception e) when (e is DirectoryNotFoundException or FileNotFoundException)
-        {
-            return null;
-        }
-    }
 }
