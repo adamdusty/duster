@@ -7,12 +7,7 @@ namespace Duster.App;
 
 public class ModService
 {
-    private Dictionary<string, ModInfo> _mods;
-
-    public ModService()
-    {
-        _mods = new Dictionary<string, ModInfo>();
-    }
+    public ModService() { }
 
     public async Task<List<ModInfo>?> LoadMods(ModLoader loader, string path)
     {
@@ -39,9 +34,9 @@ public class ModService
         return mods.Where(m => m is not null).ToList()!;
     }
 
-    public List<ISystemFactory> GetSystemFactoriesFromEnabledMods()
+    public List<ISystemFactory> GetSystemFactoriesFromEnabledMods(IEnumerable<ModInfo> mods)
     {
-        return _mods.Values.Where(m => m.Enabled == true)
+        return mods.Where(m => m.Enabled == true)
             .Select(m => m.Assembly)
             .SelectMany(a => a.GetTypes())
             .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
@@ -49,4 +44,15 @@ public class ModService
             .Where(f => f is not null)
             .ToList()!;
     }
+
+    // public List<ISystemFactory> GetSystemFactoriesFromEnabledMods()
+    // {
+    //     return _mods.Values.Where(m => m.Enabled == true)
+    //         .Select(m => m.Assembly)
+    //         .SelectMany(a => a.GetTypes())
+    //         .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
+    //         .Select(t => Activator.CreateInstance(t) as ISystemFactory)
+    //         .Where(f => f is not null)
+    //         .ToList()!;
+    // }
 }

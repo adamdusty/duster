@@ -18,15 +18,8 @@ class Program
         var app = new Application(exeDir);
         var loader = new ModLoader(Directory.GetDirectories(modDir));
         var service = new ModService();
-        System.Console.WriteLine(modDir);
+
         var mods = await service.LoadMods(loader, modDir);
-        if (mods is not null)
-        {
-            foreach (var m in mods)
-            {
-                System.Console.WriteLine($"Mod Name: {m.Name}");
-            }
-        }
 
         // Load mod assemblies
         // 

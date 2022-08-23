@@ -23,7 +23,6 @@ public class Application
         _applicationDirectory = path;
     }
 
-
     public void FixedUpdate(float dt)
     {
         foreach (var sys in _fixedUpdateSystems)
