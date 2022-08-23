@@ -15,15 +15,22 @@ class Program
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
         var modDir = Path.Combine(exeDir, "mods");
 
-        var app = new Application();
-        var modLoader = new ModLoader(Directory.GetDirectories(modDir));
+        var app = new Application(exeDir);
+        var loader = new ModLoader(Directory.GetDirectories(modDir));
+        var service = new ModService();
+        System.Console.WriteLine(modDir);
+        var mods = await service.LoadMods(loader, modDir);
+        if (mods is not null)
+        {
+            foreach (var m in mods)
+            {
+                System.Console.WriteLine($"Mod Name: {m.Name}");
+            }
+        }
 
-        var ass = await modLoader.LoadMod(Path.Combine(modDir, "render-plugin"));
-        var factory = ass?.GetTypes()
-            .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
-            .Select(f => Activator.CreateInstance(f) as ISystemFactory)
-            .First();
-        var sys = factory?.CreateSystem(app.World);
+        // Load mod assemblies
+        // 
+        // Create applciation sequential systems and parallel systems from enabled mods
 
         // Set up timing
         var sw = new Stopwatch();

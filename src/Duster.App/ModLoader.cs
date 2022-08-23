@@ -36,7 +36,7 @@ public class ModLoader
     /// </summary>
     /// <param name="path">Directory of the mod to be loaded.</param>
     /// <returns>Assembly of the mod. Null if any errors occur during loading.</returns>
-    public async Task<Assembly?> LoadMod(string path)
+    public async Task<Assembly?> LoadModAssembly(string path)
     {
         // Read manifest file in directory at path
         var manifest = await ReadManifest(Path.Combine(path, "manifest.json"));
@@ -47,4 +47,26 @@ public class ModLoader
         return _pluginService.LoadPluginAssemblyFromPath(Path.Combine(path, manifest.AssemblyPath));
     }
 
+    // Method to load mod assembly if you've already read the manifest.
+    // Not sure I like this.
+    // REVIEW
+    private Assembly? LoadModAssembly(string path, Manifest manifest)
+    {
+        return _pluginService.LoadPluginAssemblyFromPath(Path.Combine(path, manifest.AssemblyPath));
+    }
+
+    public async Task<ModInfo?> LoadMod(string path)
+    {
+        var manifest = await ReadManifest(Path.Combine(path, "manifest.json"));
+        if (manifest is null)
+            return null;
+
+        System.Console.WriteLine($"Manifest: {manifest.AssemblyPath}");
+
+        var assembly = LoadModAssembly(path, manifest);
+        if (assembly is null)
+            return null;
+
+        return new ModInfo(assembly, path, manifest.ModName);
+    }
 }

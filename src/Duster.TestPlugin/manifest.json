@@ -1,4 +1,4 @@
 {
-    "name": "Duster.TestPlugin",
+    "modName": "Duster.TestPlugin",
     "assemblyPath": "./Duster.TestPlugin.dll"
 }
