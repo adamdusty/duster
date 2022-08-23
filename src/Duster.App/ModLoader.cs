@@ -8,9 +8,9 @@ public class ModLoader
 {
     private PluginService _pluginService;
 
-    public ModLoader()
+    public ModLoader(IEnumerable<string> searchPaths)
     {
-        _pluginService = new PluginService();
+        _pluginService = new PluginService(searchPaths);
     }
 
     /// <summary>

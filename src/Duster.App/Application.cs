@@ -4,7 +4,7 @@ using Duster.Sdk;
 
 namespace Duster.App;
 
-public class Application : IDisposable
+public class Application
 {
     private List<ISystem<float>> _fixedUpdateSystems;
     private List<ISystem<float>> _frameUpdateSystems;
@@ -36,6 +36,4 @@ public class Application : IDisposable
             sys.Update(dt);
         }
     }
-
-    public void Dispose() { }
 }

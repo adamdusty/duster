@@ -15,27 +15,15 @@ class Program
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
         var modDir = Path.Combine(exeDir, "mods");
 
-        using var app = new Application();
-        var modLoader = new ModLoader();
+        var app = new Application();
+        var modLoader = new ModLoader(Directory.GetDirectories(modDir));
 
-        var renderAssembly = await modLoader.LoadMod(Path.Combine(exeDir, "mods", "render-plugin"));
-        var testAssembly = await modLoader.LoadMod(Path.Combine(exeDir, "mods", "test-plugin"));
-
-        var plugin = renderAssembly?.GetTypes().Where(t => typeof(IPlugin).IsAssignableFrom(t)).Select(t => Activator.CreateInstance(t) as IPlugin).FirstOrDefault();
-        if (plugin is null)
-        {
-            System.Console.WriteLine("Null");
-            return;
-        }
-        var testPlugin = testAssembly?.GetTypes().Where(t => typeof(IPlugin).IsAssignableFrom(t)).Select(t => Activator.CreateInstance(t) as IPlugin).FirstOrDefault();
-        if (testPlugin is null)
-        {
-            System.Console.WriteLine("Null");
-            return;
-        }
-
-        plugin.Initialize();
-        testPlugin.Initialize();
+        var ass = await modLoader.LoadMod(Path.Combine(modDir, "render-plugin"));
+        var factory = ass?.GetTypes()
+            .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
+            .Select(f => Activator.CreateInstance(f) as ISystemFactory)
+            .First();
+        var sys = factory?.CreateSystem(app.World);
 
         // Set up timing
         var sw = new Stopwatch();

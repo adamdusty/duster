@@ -6,13 +6,3 @@ using Duster.Renderer;
 
 namespace Duster.TestPlugin;
 
-public class TestPlugin : IPlugin
-{
-    public DrawInfo DrawInfo { get; set; }
-
-    public void Initialize()
-    {
-        DrawInfo = new DrawInfo { X = 42 };
-        System.Console.WriteLine(DrawInfo.X);
-    }
-}
