@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Reflection;
 using Duster.Sdk;
 
-namespace Duster.App;
+namespace Duster.ModLoader;
 
 public class ModLoader
 {

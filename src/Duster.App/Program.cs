@@ -3,6 +3,7 @@ using System.Diagnostics;
 using DefaultEcs;
 using DefaultEcs.System;
 using Duster.Sdk;
+using Duster.ModLoader;
 
 namespace Duster.App;
 
@@ -16,14 +17,10 @@ class Program
         var modDir = Path.Combine(exeDir, "mods");
 
         var app = new Application(exeDir);
-        var loader = new ModLoader(Directory.GetDirectories(modDir));
+        var loader = new ModLoader.ModLoader(Directory.GetDirectories(modDir));
         var service = new ModService();
 
         var mods = await service.LoadMods(loader, modDir);
-
-        // Load mod assemblies
-        // 
-        // Create applciation sequential systems and parallel systems from enabled mods
 
         // Set up timing
         var sw = new Stopwatch();

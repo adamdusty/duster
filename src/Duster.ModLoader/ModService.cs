@@ -1,8 +1,7 @@
 using System.Reflection;
-using DefaultEcs.System;
 using Duster.Sdk;
 
-namespace Duster.App;
+namespace Duster.ModLoader;
 
 
 public class ModService
@@ -34,16 +33,16 @@ public class ModService
         return mods.Where(m => m is not null).ToList()!;
     }
 
-    public List<ISystemFactory> GetSystemFactoriesFromEnabledMods(IEnumerable<ModInfo> mods)
-    {
-        return mods.Where(m => m.Enabled == true)
-            .Select(m => m.Assembly)
-            .SelectMany(a => a.GetTypes())
-            .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
-            .Select(t => Activator.CreateInstance(t) as ISystemFactory)
-            .Where(f => f is not null)
-            .ToList()!;
-    }
+    // public List<ISystemFactory> GetSystemFactoriesFromEnabledMods(IEnumerable<ModInfo> mods)
+    // {
+    //     return mods.Where(m => m.Enabled == true)
+    //         .Select(m => m.Assembly)
+    //         .SelectMany(a => a.GetTypes())
+    //         .Where(t => typeof(ISystemFactory).IsAssignableFrom(t))
+    //         .Select(t => Activator.CreateInstance(t) as ISystemFactory)
+    //         .Where(f => f is not null)
+    //         .ToList()!;
+    // }
 
     // public List<ISystemFactory> GetSystemFactoriesFromEnabledMods()
     // {
