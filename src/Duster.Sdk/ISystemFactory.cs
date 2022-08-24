@@ -3,7 +3,8 @@ using DefaultEcs.System;
 
 namespace Duster.Sdk;
 
-public interface ISystemFactory
+public interface ISystemProvider
 {
-    public ISystem<float> CreateSystem(World world);
+    public SystemInfo GetSystemInfo();
+    public ISystem<float> GetSystem(World world);
 }

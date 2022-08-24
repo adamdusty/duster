@@ -61,8 +61,6 @@ public class ModLoader
         if (manifest is null)
             return null;
 
-        System.Console.WriteLine($"Manifest: {manifest.AssemblyPath}");
-
         var assembly = LoadModAssembly(path, manifest);
         if (assembly is null)
             return null;

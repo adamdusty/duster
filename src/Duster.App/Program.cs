@@ -17,10 +17,11 @@ class Program
         var modDir = Path.Combine(exeDir, "mods");
 
         var app = new Application(exeDir);
-        var loader = new ModLoader.ModLoader(Directory.GetDirectories(modDir));
-        var service = new ModService();
+        var service = new ModService(Directory.GetDirectories(modDir));
 
-        var mods = await service.LoadMods(loader, modDir);
+        var mods = await service.LoadMods(modDir);
+        System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
+
 
         // Set up timing
         var sw = new Stopwatch();

@@ -4,10 +4,8 @@ using Duster.Sdk;
 
 namespace Duster.Renderer;
 
-public class WindowSystemFactory : ISystemFactory
+public class WindowSystemFactory : ISystemProvider
 {
-    public ISystem<float> CreateSystem(World world)
-    {
-        return new WindowSystem(world);
-    }
+    public SystemInfo GetSystemInfo() => new SystemInfo { Parallel = true };
+    public ISystem<float> GetSystem(World world) => new WindowSystem(world);
 }
