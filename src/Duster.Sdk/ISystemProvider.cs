@@ -5,6 +5,5 @@ namespace Duster.Sdk;
 
 public interface ISystemProvider
 {
-    public SystemInfo GetSystemInfo();
-    public ISystem<float> GetSystem(World world);
+    public SystemInfo GetSystemInfo(World world);
 }

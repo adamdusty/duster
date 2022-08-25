@@ -22,6 +22,22 @@ class Program
         var mods = await service.LoadMods(modDir);
         System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
 
+        // Create instances of factories
+        List<ISystemProvider> providers = mods?.Select(m => m.Assembly)
+            .SelectMany(a => a.GetTypes())
+            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
+            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
+            .Where(sp => sp is not null)
+            .ToList()!;
+
+        // Create instances of system info
+        var systems = providers.Select(p => p.GetSystemInfo(app.World));
+
+        // Configure application systems
+        app.BuildSystems(systems.Select(s => s.System));
+
+        // Start application
+
 
         // Set up timing
         var sw = new Stopwatch();

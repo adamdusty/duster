@@ -8,8 +8,10 @@ namespace Duster.App;
 public class Application
 {
     private string _applicationDirectory;
-    private List<ISystem<float>> _fixedUpdateSystems;
-    private List<ISystem<float>> _frameUpdateSystems;
+    private ParallelSystem<float>? _parallelFixedUpdateSystem;
+    private ParallelSystem<float>? _parallelFrameUpdateSystem;
+    private SequentialSystem<float>? _sequentialFixedUpdateSystem;
+    private SequentialSystem<float>? _sequentialFrameUpdateSystem;
 
 
     public World World { get; private set; }
@@ -18,24 +20,19 @@ public class Application
     {
         World = new World();
         World.Set<ApplicationState>(new ApplicationState());
-        _fixedUpdateSystems = new List<ISystem<float>>();
-        _frameUpdateSystems = new List<ISystem<float>>();
         _applicationDirectory = path;
+    }
+
+    public void BuildSystems(IEnumerable<ISystem<float>> systems)
+    {
+        throw new NotImplementedException();
     }
 
     public void FixedUpdate(float dt)
     {
-        foreach (var sys in _fixedUpdateSystems)
-        {
-            sys.Update(dt);
-        }
     }
 
     public void FrameUpdate(float dt)
     {
-        foreach (var sys in _frameUpdateSystems)
-        {
-            sys.Update(dt);
-        }
     }
 }
