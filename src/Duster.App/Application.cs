@@ -1,7 +1,6 @@
 using System.Reflection;
+using System.Diagnostics;
 using System.IO.Abstractions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using DefaultEcs;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
@@ -24,20 +23,35 @@ public class Application
         FrameUpdateSystems = new List<ISystem<float>>();
     }
 
-    private static IHostBuilder CreateHostBuilder(string[] args)
+    public void Run()
     {
-        var builder = Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((ctx, cfg) =>
-            {
-                cfg.Sources.Clear();
-            })
-            .ConfigureServices((c, s) =>
-            {
-                // Register services
-                s.AddScoped<IFileSystem, FileSystem>();
-            });
+        // Set up timing
+        var sw = new Stopwatch();
+        sw.Start();
 
-        return builder;
+        var time = new TimeTracker(0.02);
+
+        // Game loop
+        while (!World.Get<ApplicationState>().Quit)
+        {
+            time.Begin = sw.Elapsed.TotalSeconds;
+            time.Accumulator += time.FrameTime;
+
+            // Fixed dt update
+            while (time.Accumulator >= time.FixedDeltaTime)
+            {
+                FixedUpdate((float)time.FixedDeltaTime);
+                time.Accumulator -= time.FixedDeltaTime;
+            }
+
+            time.InterpolatedTime = time.Accumulator / time.FixedDeltaTime;
+
+            // Variable dt update
+            FrameUpdate((float)time.InterpolatedTime);
+
+            time.End = sw.Elapsed.TotalSeconds;
+            time.FrameTime = time.End - time.Begin; // Time previous frame took to update
+        }
     }
 
     public void FixedUpdate(float dt)

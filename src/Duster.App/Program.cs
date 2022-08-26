@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
 using System.Diagnostics;
+using System.IO.Abstractions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using DefaultEcs;
 using DefaultEcs.System;
 using Duster.Sdk;
@@ -17,7 +20,7 @@ class Program
         var modDir = Path.Combine(exeDir, "mods");
 
         var app = new Application();
-        var service = new ModService(Directory.GetDirectories(modDir));
+        var loader = new ModLo
 
         var mods = await service.LoadMods(modDir);
         System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
@@ -43,34 +46,6 @@ class Program
         }
 
         // Start application
-
-
-        // Set up timing
-        var sw = new Stopwatch();
-        sw.Start();
-
-        var time = new TimeTracker(0.02);
-
-        // Game loop
-        while (!app.World.Get<ApplicationState>().Quit)
-        {
-            time.Begin = sw.Elapsed.TotalSeconds;
-            time.Accumulator += time.FrameTime;
-
-            // Fixed dt update
-            while (time.Accumulator >= time.FixedDeltaTime)
-            {
-                app.FixedUpdate((float)time.FixedDeltaTime);
-                time.Accumulator -= time.FixedDeltaTime;
-            }
-
-            time.InterpolatedTime = time.Accumulator / time.FixedDeltaTime;
-
-            // Variable dt update
-            app.FrameUpdate((float)time.InterpolatedTime);
-
-            time.End = sw.Elapsed.TotalSeconds;
-            time.FrameTime = time.End - time.Begin; // Time previous frame took to update
-        }
+        app.Run();
     }
 }

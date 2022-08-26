@@ -8,14 +8,6 @@ public class PluginService
     private List<string> _searchPaths;
     private AssemblyLoadContext _context;
 
-    public PluginService()
-    {
-        _context = new AssemblyLoadContext("ModContext", true);
-        _searchPaths = new List<string>();
-
-        _context.Resolving += SearchForLibrary;
-    }
-
     public PluginService(IEnumerable<string> searchPaths)
     {
         _context = new AssemblyLoadContext("ModContext", true);
