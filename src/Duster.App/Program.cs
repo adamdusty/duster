@@ -16,7 +16,7 @@ class Program
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
         var modDir = Path.Combine(exeDir, "mods");
 
-        var app = new Application(exeDir);
+        var app = new Application();
         var service = new ModService(Directory.GetDirectories(modDir));
 
         var mods = await service.LoadMods(modDir);
@@ -34,7 +34,13 @@ class Program
         var systems = providers.Select(p => p.GetSystemInfo(app.World));
 
         // Configure application systems
-        app.BuildSystems(systems);
+        foreach (var info in systems)
+        {
+            if (info.UpdateFrequency == UpdateFrequency.Fixed)
+                app.FixedUpdateSystems.Add(info.System);
+            else if (info.UpdateFrequency == UpdateFrequency.Frame)
+                app.FrameUpdateSystems.Add(info.System);
+        }
 
         // Start application
 
