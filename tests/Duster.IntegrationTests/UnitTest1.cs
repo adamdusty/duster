@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Duster.IntegrationTests;
 
-public class UnitTest1
+public class ModLoaderTests
 {
     [Fact]
     public void Test1()

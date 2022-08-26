@@ -1,4 +1,7 @@
 using System.Reflection;
+using System.IO.Abstractions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using DefaultEcs;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
@@ -19,6 +22,22 @@ public class Application
 
         FixedUpdateSystems = new List<ISystem<float>>();
         FrameUpdateSystems = new List<ISystem<float>>();
+    }
+
+    private static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        var builder = Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((ctx, cfg) =>
+            {
+                cfg.Sources.Clear();
+            })
+            .ConfigureServices((c, s) =>
+            {
+                // Register services
+                s.AddScoped<IFileSystem, FileSystem>();
+            });
+
+        return builder;
     }
 
     public void FixedUpdate(float dt)
