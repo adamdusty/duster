@@ -34,7 +34,7 @@ class Program
         var systems = providers.Select(p => p.GetSystemInfo(app.World));
 
         // Configure application systems
-        app.BuildSystems(systems.Select(s => s.System));
+        app.BuildSystems(systems);
 
         // Start application
 
