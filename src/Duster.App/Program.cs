@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
 using System.Diagnostics;
 using System.IO.Abstractions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using DefaultEcs;
 using DefaultEcs.System;
 using Duster.Sdk;
-using Duster.ModLoader;
+using Duster.ModLoading;
 
 namespace Duster.App;
 
@@ -20,30 +18,30 @@ class Program
         var modDir = Path.Combine(exeDir, "mods");
 
         var app = new Application();
-        var loader = new ModLo
+        var loader = new ModLoader(Directory.GetDirectories(modDir));
 
-        var mods = await service.LoadMods(modDir);
-        System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
+        // var mods = await loader.LoadMods(modDir);
+        // System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
 
-        // Create instances of factories
-        List<ISystemProvider> providers = mods?.Select(m => m.Assembly)
-            .SelectMany(a => a.GetTypes())
-            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
-            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
-            .Where(sp => sp is not null)
-            .ToList()!;
+        // // Create instances of factories
+        // List<ISystemProvider> providers = mods?.Select(m => m.Assembly)
+        //     .SelectMany(a => a.GetTypes())
+        //     .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
+        //     .Select(t => Activator.CreateInstance(t) as ISystemProvider)
+        //     .Where(sp => sp is not null)
+        //     .ToList()!;
 
-        // Create instances of system info
-        var systems = providers.Select(p => p.GetSystemInfo(app.World));
+        // // Create instances of system info
+        // var systems = providers.Select(p => p.GetSystemInfo(app.World));
 
         // Configure application systems
-        foreach (var info in systems)
-        {
-            if (info.UpdateFrequency == UpdateFrequency.Fixed)
-                app.FixedUpdateSystems.Add(info.System);
-            else if (info.UpdateFrequency == UpdateFrequency.Frame)
-                app.FrameUpdateSystems.Add(info.System);
-        }
+        // foreach (var info in systems)
+        // {
+        //     if (info.UpdateFrequency == UpdateFrequency.Fixed)
+        //         app.FixedUpdateSystems.Add(info.System);
+        //     else if (info.UpdateFrequency == UpdateFrequency.Frame)
+        //         app.FrameUpdateSystems.Add(info.System);
+        // }
 
         // Start application
         app.Run();

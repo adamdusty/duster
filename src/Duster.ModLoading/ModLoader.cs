@@ -3,7 +3,7 @@ using System.Reflection;
 using System.IO.Abstractions;
 using Duster.Sdk;
 
-namespace Duster.ModLoader;
+namespace Duster.ModLoading;
 
 public class ModLoader
 {

@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Duster.Sdk\Duster.Sdk.csproj" />
-    <ProjectReference Include="..\Duster.ModLoader\Duster.ModLoader.csproj" />
+    <ProjectReference Include="..\Duster.ModLoading\Duster.ModLoading.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
