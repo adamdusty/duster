@@ -1,6 +1,6 @@
 namespace Duster.ModLoading;
 
-public struct ModInfo
+public record struct ModInfo
 {
     public string ModName;
     public string AssemblyPath;

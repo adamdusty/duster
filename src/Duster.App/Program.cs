@@ -20,6 +20,8 @@ class Program
         var app = new Application();
         var loader = new ModLoader(Directory.GetDirectories(modDir));
 
+        // loader.GetAssemblyPaths()
+
         // var mods = await loader.LoadMods(modDir);
         // System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
 
