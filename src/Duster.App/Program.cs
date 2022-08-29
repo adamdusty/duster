@@ -18,7 +18,11 @@ class Program
         var modDir = Path.Combine(exeDir, "mods");
 
         var app = new Application();
-        var loader = new ModLoader(Directory.GetDirectories(modDir));
+        var host = new ModHost();
+
+        var mods = await host.LoadModsFromDirectory(modDir);
+        var systems = host.InstanceModSystemProviders(mods.Values);
+
 
         // loader.GetAssemblyPaths()
 

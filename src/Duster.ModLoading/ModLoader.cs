@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Reflection;
+using System.Collections.Concurrent;
 using System.IO.Abstractions;
 using Duster.Sdk;
 
@@ -7,51 +8,60 @@ namespace Duster.ModLoading;
 
 public class ModLoader
 {
-    private readonly PluginService _pluginService;
-    private readonly IFileSystem _fileSystem;
+    private IFileSystem _fileSystem;
 
-    public ModLoader(IEnumerable<string> searchPaths, IFileSystem fileSystem)
+    public ModLoader(IFileSystem fileSystem) { _fileSystem = fileSystem; }
+    public ModLoader() : this(new FileSystem()) { }
+
+
+    /// <summary>
+    /// If directory <paramref name="dir" /> exists, find all directories within that directory
+    /// that contain a manifest.json file. Read the manifest files and return a list of <see cref="ModInfo" />
+    /// for each mod folder. If there are no directories with manifest files, return null.
+    /// </summary>
+    /// <param name="dir">Directory of mods.</param>
+    /// <returns>List of <see cref="ModInfo" /> or null</returns>
+    public async Task<List<ModInfo>?> GetInformationForAllMods(string dir)
     {
-        _fileSystem = fileSystem;
-        _pluginService = new PluginService(searchPaths);
-    }
+        if (!_fileSystem.Directory.Exists(dir))
+            return null;
 
-    public ModLoader(IEnumerable<string> searchPaths)
-        : this(searchPaths: searchPaths, fileSystem: new FileSystem()) { }
-
-    public async Task<List<string>> GetAssemblyPaths(string modDirectoryPath)
-    {
-        if (!_fileSystem.Directory.Exists(modDirectoryPath))
-            return new List<string>();
-
-        var files = _fileSystem.Directory.EnumerateDirectories(modDirectoryPath)
+        var files = _fileSystem.Directory.EnumerateDirectories(dir)
             .Select(d => _fileSystem.Path.Combine(d, "manifest.json"))
             .Where(p => _fileSystem.File.Exists(p));
 
-        // This is ugly but I can't currently come up with another way 
-        // to keep the directory path with the manifest object
-        var manifests = await Task.WhenAll(files.Select(async f => (_fileSystem.Path.GetDirectoryName(f), await ReadManifest(f))));
-        return manifests.Where(m => m.Item1 is not null && m.Item2 is not null)
-            .Select(m => _fileSystem.Path.Combine(m.Item1!, m.Item2!.AssemblyPath))
-            .ToList();
+        var manifests = new ConcurrentBag<(string, Manifest?)>();
+
+        // This is hella ugly but I can't currently come up with another way 
+        // to keep the directory path with the manifest object without using a foreach
+        await Task.WhenAll(files.Select(async f => manifests.Add((_fileSystem.Path.GetDirectoryName(f), await ReadManifest(f)))));
+
+        if (manifests.IsEmpty)
+            return null;
+
+        var modInfos = new List<ModInfo>();
+        foreach (var m in manifests.Where(m => m.Item1 is not null && m.Item2 is not null))
+        {
+            modInfos.Add(
+                new ModInfo
+                {
+                    ModName = m.Item2!.ModName,
+                    AssemblyPath = _fileSystem.Path.Combine(m.Item1, m.Item2.AssemblyPath)
+                }
+            );
+        }
+
+        return modInfos;
     }
 
-    public List<Assembly> LoadAssemblies(IEnumerable<string> assemblyPaths)
+    public Dictionary<ModInfo, Assembly> LoadModAssemblies(IEnumerable<ModInfo> mods)
     {
-        return assemblyPaths
-            .Select(p => _pluginService.LoadPluginAssemblyFromPath(p))
-            .Where(a => a is not null)
-            .ToList()!;
+        throw new NotImplementedException();
     }
 
-    public List<ISystemProvider> InstanceSystemProviders(IEnumerable<Assembly> assemblies)
+    public List<T>? InstanceModTypes<T>(IEnumerable<Assembly> assemblies)
     {
-        return assemblies.SelectMany(a => a.GetTypes())
-            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
-            .Where(t => t.IsClass && !t.IsAbstract)
-            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
-            .Where(isp => isp is not null)
-            .ToList()!;
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -63,7 +73,7 @@ public class ModLoader
     {
         try
         {
-            using var json = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var json = _fileSystem.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             return await JsonSerializer.DeserializeAsync<Manifest>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
         catch (Exception e) when (e is DirectoryNotFoundException or FileNotFoundException)

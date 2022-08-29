@@ -15,7 +15,7 @@ public class ModLoadingTests
             {@"./mods/test-mod2/manifest.json", new MockFileData(@"{ ""modName"": ""TestMod2"", ""assemblyPath"": ""./TestMod2.dll"" }")}
         });
 
-        var modFinder = new ModFinder(fs);
+        var modFinder = new ModLoader(fs);
 
         var infos = await modFinder.GetInformationForAllMods(@"./mods");
         Assert.NotNull(infos);
@@ -43,7 +43,7 @@ public class ModLoadingTests
             {@"./mods/test-mod1/junk_file.json", new MockFileData(@"{ ""modName"": ""TestMod1"", ""assemblyPath"": ""./TestMod1.dll"" }")},
         });
 
-        var modFinder = new ModFinder(fs);
+        var modFinder = new ModLoader(fs);
         var infos = await modFinder.GetInformationForAllMods(@"./mods");
 
         Assert.Null(infos);
