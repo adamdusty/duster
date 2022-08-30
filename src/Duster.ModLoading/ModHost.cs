@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using System.IO.Abstractions;
 using Duster.Sdk;
 
@@ -22,12 +23,7 @@ public class ModHost
     public void Disable(string modId) { throw new NotImplementedException(); }
     public async Task<IReadOnlyDictionary<ModInfo, Assembly>> LoadModsFromDirectory(string dir)
     {
-        var infos = await _loader.GetInformationForAllMods(dir);
-        if (infos is null)
-            return Mods;
-
-        _mods = _loader.LoadModAssemblies(infos);
-        return Mods;
+        throw new NotImplementedException();
     }
 
     public List<ISystemProvider>? InstanceModSystemProviders(IEnumerable<Assembly> assemblies)

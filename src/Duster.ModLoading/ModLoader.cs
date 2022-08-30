@@ -21,7 +21,7 @@ public class ModLoader
     /// </summary>
     /// <param name="dir">Directory of mods.</param>
     /// <returns>List of <see cref="ModInfo" /> or null</returns>
-    public async Task<List<ModInfo>?> GetInformationForAllMods(string dir)
+    public async Task<IEnumerable<ModInfo>?> GetInformationForAllMods(string dir)
     {
         if (!_fileSystem.Directory.Exists(dir))
             return null;
@@ -30,28 +30,26 @@ public class ModLoader
             .Select(d => _fileSystem.Path.Combine(d, "manifest.json"))
             .Where(p => _fileSystem.File.Exists(p));
 
-        var manifests = new ConcurrentBag<(string, Manifest?)>();
+        if (files?.Any() != true)
+            return null;
+
+        var info = new ConcurrentBag<ModInfo>();
 
         // This is hella ugly but I can't currently come up with another way 
         // to keep the directory path with the manifest object without using a foreach
-        await Task.WhenAll(files.Select(async f => manifests.Add((_fileSystem.Path.GetDirectoryName(f), await ReadManifest(f)))));
-
-        if (manifests.IsEmpty)
-            return null;
-
-        var modInfos = new List<ModInfo>();
-        foreach (var m in manifests.Where(m => m.Item1 is not null && m.Item2 is not null))
+        await Task.WhenAll(files.Select(async f =>
         {
-            modInfos.Add(
-                new ModInfo
-                {
-                    ModName = m.Item2!.ModName,
-                    AssemblyPath = _fileSystem.Path.Combine(m.Item1, m.Item2.AssemblyPath)
-                }
-            );
-        }
+            var manifest = await ReadManifest(f);
+            if (manifest is null)
+                return;
 
-        return modInfos;
+            info.Add(new ModInfo(
+                manifest,
+                _fileSystem.Path.GetDirectoryName(f)
+            ));
+        }));
+
+        return info;
     }
 
     public Dictionary<ModInfo, Assembly> LoadModAssemblies(IEnumerable<ModInfo> mods)

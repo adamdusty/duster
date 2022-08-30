@@ -20,18 +20,22 @@ public class ModLoadingTests
         var infos = await modFinder.GetInformationForAllMods(@"./mods");
         Assert.NotNull(infos);
         Assert.NotEmpty(infos);
-        infos = infos!.OrderBy(i => i.ModName).ToList();
 
-        Assert.Equal(infos[0].ModName, "TestMod1");
+        var testMod1 = infos!.Where(i => i.Manifest.ModName == "TestMod1").FirstOrDefault();
+        var testMod2 = infos!.Where(i => i.Manifest.ModName == "TestMod2").FirstOrDefault();
+        Assert.NotNull(testMod1);
+        Assert.NotNull(testMod2);
+
+        Assert.Equal("TestMod1", testMod1!.Manifest.ModName);
         Assert.Equal(
-            fs.Path.GetFullPath(infos[0].AssemblyPath),
-            fs.Path.GetFullPath(@"./mods/test-mod1/TestMod1.dll")
+            fs.Path.GetFullPath(@"./TestMod1.dll"),
+            fs.Path.GetFullPath(testMod1!.Manifest.AssemblyPath)
         );
 
-        Assert.Equal(infos[1].ModName, "TestMod2");
+        Assert.Equal("TestMod2", testMod2!.Manifest.ModName);
         Assert.Equal(
-            fs.Path.GetFullPath(infos[1].AssemblyPath),
-            fs.Path.GetFullPath(@"./mods/test-mod2/TestMod2.dll")
+            fs.Path.GetFullPath(@"./TestMod2.dll"),
+            fs.Path.GetFullPath(testMod2!.Manifest.AssemblyPath)
         );
     }
 
