@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Collections.Concurrent;
 using System.IO.Abstractions;
 using Duster.Sdk;
@@ -10,7 +11,10 @@ public class ModLoader
 {
     private IFileSystem _fileSystem;
 
-    public ModLoader(IFileSystem fileSystem) { _fileSystem = fileSystem; }
+    public ModLoader(IFileSystem fileSystem)
+    {
+        _fileSystem = fileSystem;
+    }
     public ModLoader() : this(new FileSystem()) { }
 
 
@@ -52,9 +56,14 @@ public class ModLoader
         return info;
     }
 
-    public Dictionary<ModInfo, Assembly> LoadModAssemblies(IEnumerable<ModInfo> mods)
+    public Mod? LoadMod(AssemblyLoadContext context, ModInfo info)
     {
-        throw new NotImplementedException();
+        var path = _fileSystem.Path.Combine(info.Directory, info.Manifest.AssemblyPath);
+        if (!_fileSystem.File.Exists(path) || _fileSystem.Path.GetExtension(path) != ".dll")
+            return null;
+
+        var assembly = context.LoadFromAssemblyPath(path);
+        return new Mod(info.Manifest, assembly);
     }
 
     public List<T>? InstanceModTypes<T>(IEnumerable<Assembly> assemblies)
@@ -79,4 +88,5 @@ public class ModLoader
             return null;
         }
     }
+
 }

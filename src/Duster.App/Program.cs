@@ -19,10 +19,9 @@ class Program
 
         var app = new Application();
         var host = new ModHost();
-
         var mods = await host.LoadModsFromDirectory(modDir);
-        var systems = host.InstanceModSystemProviders(mods.Values);
 
+        System.Console.WriteLine(mods.Count);
 
         // loader.GetAssemblyPaths()
 

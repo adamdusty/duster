@@ -17,8 +17,8 @@ public record ModInfo
 
 public record Mod
 {
-    public Manifest Manifest { get; private set; }
-    public Assembly Assembly { get; private set; }
+    public Manifest Manifest { get; init; }
+    public Assembly Assembly { get; init; }
 
     public Mod(Manifest manifest, Assembly assembly)
     {
