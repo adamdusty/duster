@@ -1,0 +1,9 @@
+[
+    {
+        "override": "testmod1",
+        "items": {
+            "id": "sword",
+            "damage": 1
+        }
+    }
+]

@@ -2,12 +2,16 @@ namespace Duster.Sdk;
 
 public class Manifest
 {
-    public string ModName { get; }
-    public string AssemblyPath { get; }
+    public string Namespace { get; set; }
+    public string Id { get; set; }
+    public string DisplyName { get; set; }
+    public Version Version { get; set; }
 
-    public Manifest(string modName, string assemblyPath)
+    public Manifest(string @namespace, string id, string displayName, Version version)
     {
-        ModName = modName;
-        AssemblyPath = assemblyPath;
+        Namespace = @namespace;
+        Id = id;
+        DisplyName = displayName;
+        Version = version;
     }
 }

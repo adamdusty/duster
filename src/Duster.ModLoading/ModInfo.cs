@@ -16,16 +16,14 @@ public record ModInfo
     }
 }
 
-public record Mod
+public class Mod
 {
-    public Manifest Manifest { get; init; }
-    public Assembly Assembly { get; init; }
-    public List<SystemInfo> Systems { get; private set; }
+    public string Id;
+    public Assembly Assembly;
 
-    public Mod(Manifest manifest, Assembly assembly)
+    public Mod(string @namespace, string name, Assembly assembly)
     {
-        Manifest = manifest;
+        Id = $"{@namespace}:{name}";
         Assembly = assembly;
-        Systems = new List<SystemInfo>();
     }
 }

@@ -1,0 +1,15 @@
+{
+    "darkMode": false,
+    "modDirectory": "./mods",
+    "coreMods": [
+        {
+            "namespace": "duster",
+            "name": "renderer",
+            "version": {
+                "major": 0,
+                "minor": 1,
+                "patch": 0
+            }
+        }
+    ]
+}

@@ -1,53 +1,49 @@
-﻿using System.Reflection;
-using System.Diagnostics;
-using System.IO.Abstractions;
-using DefaultEcs;
-using DefaultEcs.System;
-using Duster.Sdk;
-using Duster.ModLoading;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace Duster.App;
 
 class Program
 {
-    static async Task Main()
+    static void Main()
     {
         // Load all available plugins
         var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var exeDir = Path.GetDirectoryName(exePath) ?? string.Empty;
         var modDir = Path.Combine(exeDir, "mods");
 
-        var app = new Application();
+        var configLoader = new ConfigLoader();
+        var config = configLoader.LoadConfig("./config.json");
+
+        var app = new Application(config);
         var host = new ModHost();
-        var mods = await host.LoadModsFromDirectory(modDir);
-        var sys = host.InitializeMods(app.World);
 
-        // loader.GetAssemblyPaths()
+        // Load core mods
+        // Get core mod list from config
+        // Loop through each mod in the mod directory and if the mod matches an entry on the core mod list, attempt to load it.
+        var coreMods = host.LoadMods(app.Config.CoreMods);
 
-        // var mods = await loader.LoadMods(modDir);
-        // System.Console.WriteLine($"Loaded mod count: {mods?.Count}");
+        // Get system providers from core mods
+        var systems = coreMods.Select(m => host.InstantiateModSystemProviders(app.World, m));
 
-        // // Create instances of factories
-        // List<ISystemProvider> providers = mods?.Select(m => m.Assembly)
-        //     .SelectMany(a => a.GetTypes())
-        //     .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
-        //     .Select(t => Activator.CreateInstance(t) as ISystemProvider)
-        //     .Where(sp => sp is not null)
-        //     .ToList()!;
+        // Add systems from the system providers
+        foreach (var si in systems)
+        {
+            app.AddModSystem(si.System);
+        }
 
-        // // Create instances of system info
-        // var systems = providers.Select(p => p.GetSystemInfo(app.World));
-
-        // Configure application systems
-        // foreach (var info in systems)
-        // {
-        //     if (info.UpdateFrequency == UpdateFrequency.Fixed)
-        //         app.FixedUpdateSystems.Add(info.System);
-        //     else if (info.UpdateFrequency == UpdateFrequency.Frame)
-        //         app.FrameUpdateSystems.Add(info.System);
-        // }
-
-        // Start application
+        // Start systems from core mods
         app.Run();
+
+        // Load instance mods
+        var mods = loader.LoadInstanceMods(host.LoadContext, )
+
+        // Ensure that at least one of each required mod is available.
+
+        // Search mod folders for a list of available mods, their information, and the path to their directory.
+        // Get all instances
+        // Allow user to choose instance
+        // This means we must have a core mod concept for mods that must load for any instance.
+        // I can still make the core mods changable, but some will have to 
+        // be there, windowing and rendering for example.
     }
 }
