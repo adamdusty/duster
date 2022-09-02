@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 using System.IO.Abstractions;
+using DefaultEcs;
 using Duster.Sdk;
 
 namespace Duster.ModLoading;
@@ -43,12 +44,26 @@ public class ModHost
                 _mods.Add(info.Manifest.ModName, mod);
         }
 
+        foreach (var mod in Mods.Values)
+        {
+            var providers = _loader.InstanceModSystemProviders(mod.Assembly);
+            if (providers is null)
+                continue;
+        }
+
         return Mods;
     }
 
-    public List<ISystemProvider>? InstanceModSystemProviders(IEnumerable<Assembly> assemblies)
-        => _loader.InstanceModTypes<ISystemProvider>(assemblies);
-
+    public List<SystemInfo> InitializeMods(World world)
+    {
+        return Mods.Values.Select(m => m.Assembly)
+            .SelectMany(a => a.GetTypes())
+            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
+            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
+            .Where(sp => sp is not null)
+            .Select(sp => sp!.GetSystemInfo(world))
+            .ToList();
+    }
 
     private Assembly? SearchForLibrary(AssemblyLoadContext context, AssemblyName name)
     {

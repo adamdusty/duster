@@ -56,6 +56,13 @@ public class ModLoader
         return info;
     }
 
+    /// <summary>
+    /// Looks for assembly at the assembly path from <see cref="ModInfo"/>. If it exists and is a .dll,
+    /// tries to load the assembly into <paramref name="context"/>.
+    /// </summary>
+    /// <param name="context">Load context for mods.</param>
+    /// <param name="info">Mod information.</param>
+    /// <returns><see cref="Mod"/> or null isn't a .dll or doesn't exist.</returns>
     public Mod? LoadMod(AssemblyLoadContext context, ModInfo info)
     {
         var path = _fileSystem.Path.Combine(info.Directory, info.Manifest.AssemblyPath);
@@ -66,9 +73,13 @@ public class ModLoader
         return new Mod(info.Manifest, assembly);
     }
 
-    public List<T>? InstanceModTypes<T>(IEnumerable<Assembly> assemblies)
+    public List<ISystemProvider> InstanceModSystemProviders(Assembly assembly)
     {
-        throw new NotImplementedException();
+        return assembly.GetTypes()
+            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
+            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
+            .Where(sp => sp is not null)
+            .ToList()!;
     }
 
     /// <summary>
