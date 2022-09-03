@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Duster.Sdk;
+using Duster.ModLoading;
 
 namespace Duster.App;
 
@@ -23,27 +24,26 @@ class Program
         var coreMods = host.LoadMods(app.Config.CoreMods);
 
         // Get system providers from core mods
-        var systems = coreMods.Select(m => host.InstantiateModSystemProviders(app.World, m));
+        var providers = coreMods.SelectMany(m => m.Assembly.GetTypes())
+            .Where(t => typeof(ISystemProvider).IsAssignableFrom(t))
+            .Select(t => Activator.CreateInstance(t) as ISystemProvider)
+            .Where(sp => sp is not null);
 
         // Add systems from the system providers
-        foreach (var si in systems)
+        foreach (var p in providers)
         {
-            app.AddModSystem(si.System);
+            if (p is not null)
+                app.AddModSystem(p.GetSystemInfo());
         }
 
         // Start systems from core mods
         app.Run();
 
-        // Load instance mods
-        var mods = loader.LoadInstanceMods(host.LoadContext, )
-
-        // Ensure that at least one of each required mod is available.
-
-        // Search mod folders for a list of available mods, their information, and the path to their directory.
-        // Get all instances
-        // Allow user to choose instance
-        // This means we must have a core mod concept for mods that must load for any instance.
-        // I can still make the core mods changable, but some will have to 
-        // be there, windowing and rendering for example.
+        // Load sequence
+        // Look for config, if unavailable create default
+        // Create application with configuration
+        // Get core mods that must be loaded before everything else
+        //      - What to do if a core mod is unavailable?
+        // Load core mod assemblies
     }
 }

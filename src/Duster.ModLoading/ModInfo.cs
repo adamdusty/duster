@@ -18,12 +18,14 @@ public record ModInfo
 
 public class Mod
 {
-    public string Id;
+    public readonly string Namespace;
+    public readonly string Name;
     public Assembly Assembly;
 
     public Mod(string @namespace, string name, Assembly assembly)
     {
-        Id = $"{@namespace}:{name}";
+        Namespace = @namespace;
+        Name = name;
         Assembly = assembly;
     }
 }

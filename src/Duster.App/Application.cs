@@ -1,16 +1,21 @@
+using DefaultEcs;
 using Duster.Sdk;
 
 namespace Duster.App;
 
 public class Application
 {
+    private World _world;
+    public World ActiveWorld => _world;
     public readonly IConfig Config;
     public Application(IConfig config)
     {
         Config = config;
+        _world = new World();
     }
     public void Run() { throw new NotImplementedException(); }
     public void AddSystem(SystemInfo info) { throw new NotImplementedException(); }
+    public void AddModSystem(SystemInfo info) { throw new NotImplementedException(); }
 }
 
 // public class Application
